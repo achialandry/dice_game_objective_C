@@ -8,12 +8,11 @@
 
 #import "Dice.h"
 #import <GameplayKit/GKRandomSource.h>
-static NSUInteger const upperBoundValue = 6;
+
 @implementation Dice
+static NSUInteger const upperBoundValue = 6;
 
-
--(void)randomizeValue:(NSUInteger)valueToRandomize{
-     valueToRandomize = [[GKRandomSource sharedRandom]nextIntWithUpperBound:upperBoundValue] + 1;
-    self.currentValue = valueToRandomize;
+-(void)randomizeValue{
+     self.currentValue = [[GKRandomSource sharedRandom]nextIntWithUpperBound:upperBoundValue] + 1;
 }
 @end

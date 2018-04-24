@@ -15,5 +15,5 @@
 
 # pragma mark - Public methods
 /*method randomizes the current value passed as argument */
--(void)randomizeValue:(NSUInteger)valueToRandomize;
+-(void)randomizeValue;
 @end

@@ -10,8 +10,38 @@
 #import "Dice.h"
 #import "InputCollector.h"
 
+/*method to check type of unicode value*/
+void sendOutUnicode(NSUInteger randomizedValue)
+{
+    switch (randomizedValue) {
+        case 1:
+            NSLog(@"1️⃣");
+            break;
+        case 2:
+            NSLog(@"2️⃣");
+            break;
+        case 3:
+            NSLog(@"3️⃣");
+            break;
+        case 4:
+            NSLog(@"4️⃣");
+            break;
+        case 5:
+            NSLog(@"5️⃣");
+            break;
+        case 6:
+            NSLog(@"6️⃣");
+            break;
+        default:
+            break;
+    }
+}
+
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
+        
+        
+        
         //instance for dice one
         Dice *diceOne = [[Dice alloc]init];
         
@@ -41,20 +71,25 @@ int main(int argc, const char * argv[]) {
         while (proceed) {
             NSString *userInput = [InputCollector inputForPrompt:@"Type roll to roll dice or quit to quit app: "];
             if ([userInput isEqualToString:checkIfInputIsRoll]) {
-                [diceOne randomizeValue:5];
-                NSLog(@"Output Dice One: %lu", (unsigned long)diceOne.currentValue);
+                [diceOne randomizeValue];
+                sendOutUnicode(diceOne.currentValue);
+//                NSLog(@"Output Dice One: %lu", (unsigned long)diceOne.currentValue);
                 
-                [diceTwo randomizeValue:3];
-                NSLog(@"Outpute Dice Two: %lu", (unsigned long)diceTwo.currentValue);
+                [diceTwo randomizeValue];
+                sendOutUnicode(diceTwo.currentValue);
+//                NSLog(@"Outpute Dice Two: %lu", (unsigned long)diceTwo.currentValue);
                 
-                [diceThree randomizeValue:4];
-                NSLog(@"Output Dice Three: %lu", (unsigned long)diceThree.currentValue);
+                [diceThree randomizeValue];
+                sendOutUnicode(diceThree.currentValue);
+//                NSLog(@"Output Dice Three: %lu", (unsigned long)diceThree.currentValue);
                 
-                [diceFour randomizeValue:1];
-                NSLog(@"Output Dice Four: %lu", (unsigned long)diceFour.currentValue);
+                [diceFour randomizeValue];
+                sendOutUnicode(diceFour.currentValue);
+//                NSLog(@"Output Dice Four: %lu", (unsigned long)diceFour.currentValue);
                 
-                [diceFive randomizeValue:2];
-                NSLog(@"Output Dice Five: %lu", (unsigned long)diceFive.currentValue);
+                [diceFive randomizeValue];
+                sendOutUnicode(diceFive.currentValue);
+//                NSLog(@"Output Dice Five: %lu", (unsigned long)diceFive.currentValue);
                 proceed = 1;
             }else if([userInput isEqualToString:quitMessage]){
                 proceed = 0;
