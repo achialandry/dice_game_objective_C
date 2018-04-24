@@ -14,5 +14,6 @@
 @property NSUInteger currentValue;
 
 # pragma mark - Public methods
+/*method randomizes the current value passed as argument */
 -(void)randomizeValue:(NSUInteger)valueToRandomize;
 @end
