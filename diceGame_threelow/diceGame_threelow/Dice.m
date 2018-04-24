@@ -11,6 +11,7 @@
 static NSUInteger const upperBoundValue = 6;
 @implementation Dice
 
+
 -(void)randomizeValue:(NSUInteger)valueToRandomize{
      valueToRandomize = [[GKRandomSource sharedRandom]nextIntWithUpperBound:upperBoundValue] + 1;
     self.currentValue = valueToRandomize;
