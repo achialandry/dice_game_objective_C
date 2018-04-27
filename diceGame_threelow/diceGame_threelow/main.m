@@ -9,8 +9,15 @@
 #import <Foundation/Foundation.h>
 #import "Dice.h"
 #import "InputCollector.h"
+#import "GameController.h"
 
 /*method to check type of unicode value*/
+BOOL isANumber(NSString *checkInputIsInt){
+    NSPredicate *numberPredicate = [NSPredicate predicateWithFormat:@"SELF MATCHES '^[0-9]+$'"];
+    return [numberPredicate evaluateWithObject:checkInputIsInt];
+}
+
+//method to output the different special characters to represent dice values.
 void sendOutUnicode(NSUInteger randomizedValue)
 {
     switch (randomizedValue) {
@@ -39,57 +46,78 @@ void sendOutUnicode(NSUInteger randomizedValue)
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        
-        
-        
-        //instance for dice one
-        Dice *diceOne = [[Dice alloc]init];
-        
-        
-        //instance for dice two
-        Dice *diceTwo = [[Dice alloc]init];
+    
+        GameController *controller = [[GameController alloc] init];
        
-        
-        //instance for dice three
-        Dice *diceThree = [[Dice alloc] init];
-        
-        
-        //instance for dice four
-        Dice *diceFour = [[Dice alloc] init];
-        
-        
-        //instance for dice five
-        Dice *diceFive = [[Dice alloc] init];
-        
-        
-        
+        [controller setupGame];
         //getting input from user to perfom the roll
         
         NSString *checkIfInputIsRoll = @"roll";
+        NSString *resetInput = @"reset";
+        NSString *newGame = @"newgame";
         NSString *quitMessage =@"quit";
         int proceed = 1;
         while (proceed) {
-            NSString *userInput = [InputCollector inputForPrompt:@"Type roll to roll dice or quit to quit app: "];
-            if ([userInput isEqualToString:checkIfInputIsRoll]) {
-                [diceOne randomizeValue];
-                sendOutUnicode(diceOne.currentValue);
-//                NSLog(@"Output Dice One: %lu", (unsigned long)diceOne.currentValue);
+            NSString *userInput;
+            if (controller.rollsTracking < 5) {
+                userInput = [InputCollector inputForPrompt:@"Type roll to ROLL dice, reset to RESET , newgame to Start NEW GAME OR. quit to QUIT app: "];
+            } else {
+                userInput = [InputCollector inputForPrompt:@"You MUST reset to continue.. Type Reset: "];
+            }
+            
+            if ([userInput isEqualToString:checkIfInputIsRoll] && controller.rollsTracking <= 5) {
                 
-                [diceTwo randomizeValue];
-                sendOutUnicode(diceTwo.currentValue);
-//                NSLog(@"Outpute Dice Two: %lu", (unsigned long)diceTwo.currentValue);
+                //displaying number of rolls since last reset
+                NSLog(@"Number of rolls:%d", ++controller.rollsTracking);
+                NSLog(@"Score to Beat: %d", controller.scoreToBeat);
+    
+                NSUInteger value;
                 
-                [diceThree randomizeValue];
-                sendOutUnicode(diceThree.currentValue);
-//                NSLog(@"Output Dice Three: %lu", (unsigned long)diceThree.currentValue);
+                for (int i=0; i<5; i++) {
+                    
+                    if ([controller.saveUserIndexes containsObject:@(i)]) {
+                        continue;
+                    } else {
+                        [controller.tempArrayHeldDices[i] randomizeValue];
+                        value = controller.tempArrayHeldDices[i].currentValue;
+                        sendOutUnicode(value);
+                        controller.printTracking ++;
+                    }
+                    
+                    
+                }
+                NSString *userHoldInputs = [InputCollector inputForPrompt:@"Indexes of Dices to hold: "];
                 
-                [diceFour randomizeValue];
-                sendOutUnicode(diceFour.currentValue);
-//                NSLog(@"Output Dice Four: %lu", (unsigned long)diceFour.currentValue);
+                //getting all numbers from userHoldInputs and putt inside an array
                 
-                [diceFive randomizeValue];
-                sendOutUnicode(diceFive.currentValue);
-//                NSLog(@"Output Dice Five: %lu", (unsigned long)diceFive.currentValue);
+                NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"\\b\\d+" options:0 error:nil];
+                NSArray *matches = [expression matchesInString:userHoldInputs options:0 range:(NSMakeRange(0, userHoldInputs.length))];
+                NSMutableArray *result = [[NSMutableArray alloc] init];
+                for (NSTextCheckingResult *match in matches) {
+                    [result addObject:[userHoldInputs substringWithRange:match.range]];
+                }
+                
+                
+                for (int k=0; k<[result count]; k++) {
+                    NSNumber *objIdx = result[k];
+                    int indx = [objIdx intValue];
+                    if (indx > 4) {
+                        NSLog(@"Failed to add %d Index must be between 0 - 4", indx);
+                    }else{
+                        [controller holdingDice:indx];
+                    }
+                    
+                }
+                //the user current score
+                [controller currentScore];
+                proceed = 1;
+            }else if([userInput isEqualToString:resetInput]){
+                //reset dices
+                [controller resetDice];
+                proceed = 1;
+            }else if([userInput isEqualToString:newGame]){
+                //reset dices
+                [controller newGame];
                 proceed = 1;
             }else if([userInput isEqualToString:quitMessage]){
                 proceed = 0;
